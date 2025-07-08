@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:medicapp/app/modules/auth/viewmodels/cadastro/cadastro_viewmodel.dart';
 
 class CadastroPage extends StatefulWidget {
   const CadastroPage({super.key});
@@ -14,10 +16,35 @@ class _CadastroPageState extends State<CadastroPage> {
   final confirmEmailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  late CadastroViewmodel viewModel;
 
-  void _submit() {
+  @override
+  void initState() {
+    super.initState();
+    viewModel = Modular.get<CadastroViewmodel>();
+  }
+
+  void _submit() async {
     if (_formKey.currentState!.validate()) {
+      final nome = nameController.text.trim();
+      final email = emailController.text.trim();
+      final senha = passwordController.text.trim();
 
+      final sucesso = await viewModel.cadastrar(nome, email, senha);
+
+      if (sucesso) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.green,
+            content: Text('Conta criada com sucesso!'),
+          ),
+        );
+        Modular.to.pop();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(viewModel.error.value ?? 'Erro ao cadastrar')),
+        );
+      }
     }
   }
 
@@ -38,7 +65,7 @@ class _CadastroPageState extends State<CadastroPage> {
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) =>
-                value == null || value.isEmpty ? 'Informe seu nome' : null,
+                    value == null || value.isEmpty ? 'Informe seu nome' : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -47,8 +74,9 @@ class _CadastroPageState extends State<CadastroPage> {
                   labelText: 'E-mail',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) =>
-                value == null || !value.contains('@') ? 'E-mail inválido' : null,
+                validator: (value) => value == null || !value.contains('@')
+                    ? 'E-mail inválido'
+                    : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -69,8 +97,9 @@ class _CadastroPageState extends State<CadastroPage> {
                   border: OutlineInputBorder(),
                 ),
                 obscureText: true,
-                validator: (value) =>
-                value == null || value.length < 6 ? 'Senha muito curta' : null,
+                validator: (value) => value == null || value.length < 6
+                    ? 'Senha muito curta'
+                    : null,
               ),
               const SizedBox(height: 16),
               TextFormField(

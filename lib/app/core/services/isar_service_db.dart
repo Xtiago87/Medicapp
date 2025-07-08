@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:medicapp/app/models/medicacao_model.dart';
 import 'package:medicapp/app/models/user_model.dart';
@@ -9,11 +10,14 @@ class IsarServiceDB {
 
   Future<void> init() async {
     final dir = await getApplicationDocumentsDirectory();
-
     _isar = await Isar.open(
       [UserModelSchema, MedicacaoModelSchema],
       directory: dir.path,
     );
+  }
+
+  IsarServiceDB(){
+    init();
   }
 
   Isar get isar => _isar;

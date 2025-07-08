@@ -1,40 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:medicapp/app/modules/auth/domain/entities/dados_login.dart';
 import 'package:medicapp/app/modules/auth/domain/usecases/login/login_usecase.dart';
 
 class LoginViewModel extends ChangeNotifier {
-  final LoginUsecase _loginUsecase;
+  final LoginUsecase _loginUsecase = Modular.get<LoginUsecase>();
 
-  bool _loading = false;
-  String? _error;
+  ValueNotifier<bool> isLoading = ValueNotifier(false);
+  ValueNotifier<String?> error = ValueNotifier(null);
 
-  bool get isLoading => _loading;
-  String? get error => _error;
+  LoginViewModel();
 
-  LoginViewModel(this._loginUsecase);
-
-  Future<void> login(String email, String password) async {
+  Future<bool> login(String email, String password) async {
     _setLoading(true);
-    _error = null;
 
     try {
+      _setError(null);
       final dadosLogin = DadosLoginEntity(email: email, password: password);
       final user = await _loginUsecase.call(dadosLogin);
 
       if (user == null) {
-        _error = 'Usuário ou senha inválidos';
-      } else {
-        //TODO
+        _setError('Usuário ou senha inválidos');
       }
+      return true;
     } catch (e) {
-      _error = 'Erro inesperado: ${e.toString()}';
+      debugPrint('error ${e}');
+      _setError('Erro inesperado: ${e.toString()}');
+      return false;
+    } finally {
+      _setLoading(false);
     }
-
-    _setLoading(false);
   }
 
   void _setLoading(bool value) {
-    _loading = value;
+    isLoading.value = value;
+    notifyListeners();
+  }
+
+  void _setError(String? value) {
+    error.value = value;
     notifyListeners();
   }
 }
