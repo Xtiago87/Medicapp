@@ -1,3 +1,5 @@
+import 'package:medicapp/app/modules/main/domain/repositories/iuser_repository.dart';
+
 class DeletarContaUsecase {
   final IUserRepository userRepo;
 

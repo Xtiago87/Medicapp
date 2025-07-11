@@ -1,3 +1,5 @@
+import 'package:medicapp/app/modules/main/domain/entites/medicacao_entity.dart';
+
 abstract class IMedicacaoRepository {
   Future<MedicacaoEntity> cadastrarMed(MedicacaoEntity med);
   Future<bool> deletarMed(int medId);

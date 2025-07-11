@@ -1,3 +1,6 @@
+import 'package:medicapp/app/modules/main/domain/entites/medicacao_entity.dart';
+import 'package:medicapp/app/modules/main/domain/repositories/imedicacao_repository.dart';
+
 class CadastroMedUsecase {
   final IMedicacaoRepository medRepository;
 

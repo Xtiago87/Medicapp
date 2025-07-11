@@ -1,3 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:medicapp/app/modules/main/domain/usecase/medicacao/cadastro_med_usecase.dart';
+import 'package:medicapp/app/modules/main/domain/usecase/medicacao/deletar_med_usecase.dart';
+import 'package:medicapp/app/modules/main/domain/usecase/medicacao/editar_med_usecase.dart';
+
 class MedFormViewmodel extends ChangeNotifier{
 
   final CadastroMedUsecase cadastroMedUsecase;

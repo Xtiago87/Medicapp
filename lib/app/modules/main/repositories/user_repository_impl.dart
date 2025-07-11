@@ -1,21 +1,30 @@
-import 'package:your_app/app/core/services/isar_service.dart';
-import 'package:your_app/app/core/domain/entities/user_entity.dart';
-import 'package:your_app/app/modules/main/profile/interfaces/i_user_repository.dart';
+import 'package:medicapp/app/core/services/isar_service_db.dart';
+import 'package:medicapp/app/core/services/sharedpreferences_service.dart';
+import 'package:medicapp/app/models/user_model.dart';
+import 'package:medicapp/app/modules/auth/domain/entities/user_entity.dart';
+import 'package:medicapp/app/modules/main/domain/repositories/iuser_repository.dart';
+
 
 class UserRepositoryImpl implements IUserRepository {
   final IsarServiceDB _isar;
+  final SharedPreferencesService _sharedPreferences;
 
-  UserRepositoryImpl(this._isar);
+  UserRepositoryImpl(this._isar, this._sharedPreferences);
 
   @override
-  Future<UserEntity?> getUserById(int id) async {
-    return await _isar.getUserById(id);
+  Future<UserEntity?> getUserById() async {
+    final loggedUser = await _sharedPreferences.getLoggedUserId();
+    final user = await _isar.findUserById(loggedUser);
+    if(user != null){
+      return user.toEntity();
+    }
+    return null;
   }
 
   @override
-  Future<UserEntity> editarUser(UserEntity user) async {
-    await _isar.saveUser(user);
-    return user;
+  Future<bool> editarUser(UserEntity user) async {
+    await _isar.saveUser(UserModel.fromEntity(user));
+    return true;
   }
 
   @override
@@ -25,6 +34,6 @@ class UserRepositoryImpl implements IUserRepository {
 
   @override
   Future<void> logoutUser() async {
-    await _isar.clearCurrentUser();
+    await _sharedPreferences.logoutUser();
   }
 }

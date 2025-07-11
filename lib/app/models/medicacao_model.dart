@@ -1,4 +1,5 @@
 import 'package:isar/isar.dart';
+import 'package:medicapp/app/modules/main/domain/entites/medicacao_entity.dart';
 // import '../modules/main/medication_form/domain/entities/medication_entity.dart';
 
 part 'medicacao_model.g.dart';
@@ -8,38 +9,38 @@ class MedicacaoModel {
   Id id = Isar.autoIncrement;
 
   late String name;
-  late String dosagem;
+  late String observacao;
   late DateTime startDate;
   late DateTime endDate;
-  late List<String> horariosParaTomar;
+  late List<int> diasSemana;
   late bool estaTomando;
   late int userId;
 
 
-  // MedicationEntity toEntity() {
-  //   return MedicationEntity(
-  //     id: id.toString(),
-  //     name: name,
-  //     dosagem: dosagem,
-  //     startDate: startDate,
-  //     endDate: endDate,
-  //     horariosParaTomar: horariosParaTomar,
-  //     estaTomando: estaTomando,
-  //     userId: userId.toString(),
-  //   );
-  // }
+  MedicacaoEntity toEntity() {
+    return MedicacaoEntity(
+      id: id,
+      nome: name,
+      observacao: observacao,
+      startDate: startDate,
+      endDate: endDate,
+      diasSemana: diasSemana,
+      tomando: estaTomando,
+      userId: userId,
+    );
+  }
 
   
-  // static MedicacaoModel fromEntity(MedicationEntity entity) {
-  //   final model = MedicacaoModel();
-  //   model.id = int.tryParse(entity.id) ?? Isar.autoIncrement;
-  //   model.name = entity.name;
-  //   model.dosagem = entity.dosagem;
-  //   model.startDate = entity.startDate;
-  //   model.endDate = entity.endDate;
-  //   model.horariosParaTomar = entity.horariosParaTomar;
-  //   model.estaTomando = entity.estaTomando;
-  //   model.userId = int.tryParse(entity.userId) ?? 0;
-  //   return model;
-  // }
+  static MedicacaoModel fromEntity(MedicacaoEntity entity) {
+    final model = MedicacaoModel();
+    model.id = entity.id ?? Isar.autoIncrement;
+    model.name = entity.nome;
+    model.observacao = entity.observacao;
+    model.startDate = entity.startDate;
+    model.endDate = entity.endDate;
+    model.diasSemana = entity.diasSemana;
+    model.estaTomando = entity.tomando;
+    model.userId = entity.userId ?? -1;
+    return model;
+  }
 }

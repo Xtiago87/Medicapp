@@ -1,37 +1,48 @@
+import 'package:flutter/material.dart';
+import 'package:medicapp/app/modules/auth/domain/entities/user_entity.dart';
+import 'package:medicapp/app/modules/main/domain/usecase/user/deletar_conta_usecase.dart';
+import 'package:medicapp/app/modules/main/domain/usecase/user/get_user_by_id_usecase.dart';
+import 'package:medicapp/app/modules/main/domain/usecase/user/logout_user_usecase.dart';
+
 class PerfilViewmodel extends ChangeNotifier {
   final DeletarContaUsecase deletarContaUsecase;
   final GetUserByIdUsecase getUserByIdUsecase;
   final LogoutUsecase logoutUsecase;
 
-  PerfilViewmodel(this.deletarContaUsecase, this.getUserByIdUsecase, this.logoutUsecase);
+  PerfilViewmodel(
+    this.deletarContaUsecase,
+    this.getUserByIdUsecase,
+    this.logoutUsecase,
+  );
 
   ValueNotifier<bool> isLoading = ValueNotifier(false);
   ValueNotifier<UserEntity?> user = ValueNotifier(null);
   ValueNotifier<String?> error = ValueNotifier(null);
 
-
-
   Future<void> getUser() async {
     _setLoading(true);
     try {
       user.value = await getUserByIdUsecase.call();
-      
-      notifyListeners()
+
+      notifyListeners();
     } catch (e) {
-      erro.value = 'Erro ao carregar dados.';
+      _setError('Erro ao carregar dados.');
     } finally {
       _setLoading(false);
     }
   }
 
-
-    Future<bool> deletarUser() async {
+  Future<bool> deletarUser() async {
     _setLoading(true);
     try {
-      final userDeleted = await deletarContaUsecase.call(user.value.id);
-      return userDeleted;
+      if (user.value != null) {
+        final userDeleted = await deletarContaUsecase.call(int.parse(user.value!.id));
+        return userDeleted;
+      }
+      return false;
     } catch (e) {
-      erro.value = 'Erro ao deletar conta.';
+      _setError('Erro ao deletar conta.');
+      return false;
     } finally {
       _setLoading(false);
     }
@@ -41,9 +52,10 @@ class PerfilViewmodel extends ChangeNotifier {
     _setLoading(true);
     try {
       final userLoggedOut = await logoutUsecase.call();
-      return userLoggedOut;
+      return true;
     } catch (e) {
-      erro.value = 'Erro ao realizar o logout .';
+      _setError('Erro ao realizar o logout .');
+      return false;
     } finally {
       _setLoading(false);
     }
@@ -58,5 +70,4 @@ class PerfilViewmodel extends ChangeNotifier {
     error.value = value;
     notifyListeners();
   }
-
 }

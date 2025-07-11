@@ -1,3 +1,6 @@
+import 'package:medicapp/app/modules/auth/domain/entities/user_entity.dart';
+import 'package:medicapp/app/modules/main/domain/repositories/iuser_repository.dart';
+
 class EditarContaUsecase {
   final IUserRepository userRepo;
 

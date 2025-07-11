@@ -24,14 +24,14 @@ class AuthRepositoryImpl implements IAuthRepository {
   }
 
   @override
-  Future<UserEntity> cadastro(UserEntity user, String password) async {
+  Future<UserEntity> cadastro(UserEntity user,) async {
     final existing = await _isarService.findUserByEmail(user.email);
 
     if (existing != null) {
       throw Exception('E-mail já cadastrado');
     }
 
-    final newUser = UserModel.fromEntity(user, password);
+    final newUser = UserModel.fromEntity(user);
     await _isarService.saveUser(newUser);
 
     return newUser.toEntity();

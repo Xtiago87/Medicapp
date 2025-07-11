@@ -5,6 +5,8 @@ class MedicacaoEntity {
   final bool tomando;
   final List<int> diasSemana;
   final int userId;
+  final DateTime startDate;
+  final DateTime endDate;
 
   MedicacaoEntity({
     required this.id,
@@ -13,5 +15,7 @@ class MedicacaoEntity {
     required this.tomando,
     required this.diasSemana,
     required this.userId,
+    required this.startDate, 
+    required this.endDate
   });
 }

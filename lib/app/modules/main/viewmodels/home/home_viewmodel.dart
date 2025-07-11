@@ -1,3 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:medicapp/app/modules/main/domain/entites/medicacao_entity.dart';
+import 'package:medicapp/app/modules/main/domain/usecase/medicacao/get_all_meds_usecase.dart';
+import 'package:medicapp/app/modules/main/domain/usecase/user/get_user_by_id_usecase.dart';
+
 class HomeViewmodel extends ChangeNotifier {
 final GetAllMedsUsecase getAllMedsUsecase;
 final GetUserByIdUsecase getUserByIdUsecase;
@@ -6,7 +11,7 @@ final GetUserByIdUsecase getUserByIdUsecase;
   ValueNotifier<String?> error = ValueNotifier(null);
 
   ValueNotifier<String> username = ValueNotifier('');
-  List<MedicacaoEntity> _allmeds = ValueNotifier([]);
+  List<MedicacaoEntity> _allmeds = [];
   ValueNotifier<List<MedicacaoEntity>> meds = ValueNotifier([]);
 
   DateTime _dataSelecionada = DateTime.now();
@@ -18,12 +23,15 @@ final GetUserByIdUsecase getUserByIdUsecase;
       _setLoading(true);
 
     try {
-      username.value = await getUserByIdUsecase.call().name;
+      final user = await getUserByIdUsecase.call();
+      if(user != null){
+        username.value = user.name;
+      }      
       _allmeds = await getAllMedsUsecase.call();
 
-      filtrarPorDia(_dataSelecionada);
+      _filtrarPorDia(_dataSelecionada);
     } catch (e) {
-      erro = 'Erro ao carregar dados.';
+      _setError('Erro ao carregar dados.');
     } finally {
       _setLoading(false);
     }
@@ -31,19 +39,20 @@ final GetUserByIdUsecase getUserByIdUsecase;
 
 Map<int, int> getMedsPorDia() {
   final Map<int, int> medsPorDia = {
-    1: 0, 
-    2: 0, 
-    3: 0, 
-    4: 0, 
-    5: 0, 
-    6: 0, 
-    7: 0, 
+    1: 0, // Segunda
+    2: 0, // Terça
+    3: 0, // Quarta
+    4: 0, // Quinta
+    5: 0, // Sexta
+    6: 0, // Sábado
+    7: 0, // Domingo
   };
 
   for (final med in _allmeds) {
-    final dia = med.diaSemana;
-    if (medsPorDia.containsKey(dia)) {
-      medsPorDia[dia] = medsPorDia[dia]! + 1;
+    for (final dia in med.diasSemana) {
+      if (medsPorDia.containsKey(dia)) {
+        medsPorDia[dia] = medsPorDia[dia]! + 1;
+      }
     }
   }
 
@@ -57,9 +66,15 @@ Map<int, int> getMedsPorDia() {
   }
 
   void _filtrarPorDia(DateTime dia) {
-    meds.value = _allmeds.where((med) {
-      return med.diaSemana == dia.weekday;
-    }).toList();
+    final auxMeds = <MedicacaoEntity>[];
+    for (var med in meds.value) {
+      for (var element in med.diasSemana) {
+        if(element == dia.weekday){
+          auxMeds.add(med);
+        }
+      ;}
+    }
+    meds.value = auxMeds;
     notifyListeners();
   }
 
