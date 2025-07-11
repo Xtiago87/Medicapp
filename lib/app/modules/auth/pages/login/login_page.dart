@@ -29,12 +29,15 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  void _submit() {
+  void _submit() async {
     if (_formKey.currentState?.validate() ?? false) {
-      viewModel.login(
+      final result = await viewModel.login(
         emailController.text.trim(),
         passwordController.text.trim(),
       );
+      if(result){
+        Modular.to.navigate('/main/');
+      }
     }
   }
 
