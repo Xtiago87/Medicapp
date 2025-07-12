@@ -1,6 +1,5 @@
 import 'package:isar/isar.dart';
 import 'package:medicapp/app/modules/main/domain/entites/medicacao_entity.dart';
-// import '../modules/main/medication_form/domain/entities/medication_entity.dart';
 
 part 'medicacao_model.g.dart';
 
@@ -31,7 +30,7 @@ class MedicacaoModel {
   }
 
   
-  static MedicacaoModel fromEntity(MedicacaoEntity entity) {
+  static MedicacaoModel fromEntity(MedicacaoEntity entity, int userId) {
     final model = MedicacaoModel();
     model.id = entity.id ?? Isar.autoIncrement;
     model.name = entity.nome;
@@ -40,7 +39,7 @@ class MedicacaoModel {
     model.endDate = entity.endDate;
     model.diasSemana = entity.diasSemana;
     model.estaTomando = entity.tomando;
-    model.userId = entity.userId ?? -1;
+    model.userId = userId;
     return model;
   }
 }

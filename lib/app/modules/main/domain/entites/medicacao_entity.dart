@@ -1,5 +1,5 @@
 class MedicacaoEntity {
-  final int id;
+  final int? id;
   final String nome;
   final String observacao;
   final bool tomando;

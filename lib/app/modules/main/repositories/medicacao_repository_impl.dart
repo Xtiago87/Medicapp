@@ -1,4 +1,5 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:medicapp/app/core/services/isar_service_db.dart';
 import 'package:medicapp/app/core/services/sharedpreferences_service.dart';
 import 'package:medicapp/app/models/medicacao_model.dart';
@@ -13,7 +14,8 @@ class MedicacaoRepositoryImpl implements IMedicacaoRepository {
 
   @override
   Future<MedicacaoEntity> cadastrarMed(MedicacaoEntity med) async {
-    await _isar.saveMedication(MedicacaoModel.fromEntity(med));
+    final userId = await _sharedPreferencesService.getLoggedUserId();
+    await _isar.saveMedication(MedicacaoModel.fromEntity(med, userId));
     return med;
   }
 
@@ -24,7 +26,8 @@ class MedicacaoRepositoryImpl implements IMedicacaoRepository {
 
   @override
   Future<bool> editarMed(MedicacaoEntity med) async {
-    await _isar.saveMedication(MedicacaoModel.fromEntity(med));
+    final userId = await _sharedPreferencesService.getLoggedUserId();
+    await _isar.saveMedication(MedicacaoModel.fromEntity(med, userId));
     return true;
   }
 
