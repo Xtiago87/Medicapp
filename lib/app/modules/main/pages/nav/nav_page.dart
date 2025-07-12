@@ -10,7 +10,12 @@ class NavPage extends StatefulWidget {
 
 class _NavPageState extends State<NavPage> {
   int currentIndex = 0;
-  final tabs = ['/main/home', '/main/historico','/main/med_form', '/main/perfil'];
+  final tabs = [
+    '/main/home',
+    '/main/historico',
+    '/main/med_form',
+    '/main/perfil',
+  ];
 
   void onTabTapped(int index) {
     setState(() => currentIndex = index);
@@ -49,6 +54,15 @@ class _NavPageState extends State<NavPage> {
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
         ],
       ),
+      floatingActionButton: currentIndex == 0
+          ? FloatingActionButton(
+              onPressed: () async {
+                setState(() => currentIndex = 2);
+                Modular.to.navigate(tabs[2]);
+              },
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 }

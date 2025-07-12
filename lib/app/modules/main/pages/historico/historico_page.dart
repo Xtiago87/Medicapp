@@ -78,12 +78,19 @@ class _HistoricoPageState extends State<HistoricoPage> {
                         itemBuilder: (context, index) {
                           final med = meds[index];
                           return Card(
-                            child: ListTile( 
+                            child: ListTile(
                               leading: const Icon(Icons.medication),
                               title: Text(med.nome),
                               subtitle: Text(med.observacao),
-                              onTap: () {
-                                Modular.to.pushNamed('/main/detalhes_med/${med.id}');
+                              onTap: () async {
+                                final result =
+                                    await Modular.to.pushNamed(
+                                          '/main/detalhes_med/${med.id}',
+                                        )
+                                        as bool;
+                               
+                                  await viewModel.init();
+                                
                               },
                             ),
                           );

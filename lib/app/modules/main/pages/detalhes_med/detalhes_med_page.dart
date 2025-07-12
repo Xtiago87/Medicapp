@@ -118,6 +118,44 @@ class _DetalhesMedPageState extends State<DetalhesMedPage> {
     }
   }
 
+  editar() async {
+    if (_formKey.currentState!.validate()) {
+      final nome = nomeController.text.trim();
+      final observacao = obsController.text.trim();
+      final diasSemana = diasSemanaSelecionados.entries
+          .where((e) => e.value)
+          .map((e) => diasDaSemanaMap[e.key]!)
+          .toList();
+
+      final result = await viewModel.editarMedicacao(
+        nome: nome,
+        observacao: observacao,
+        tomando: tomando,
+        diasSemana: diasSemana,
+        startDate: startDate!,
+        endDate: endDate!,
+        id: widget.medId,
+      );
+
+      if (result) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Medicamento salvo com sucesso!')),
+        );
+       Modular.to.pop(true);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(viewModel.error.value ?? 'Erro ao salvar')),
+        );
+      }
+    }
+  }
+
+  habilitarEdicao() {
+    setState(() {
+      edicaoHabilitada = !edicaoHabilitada;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -162,6 +200,7 @@ class _DetalhesMedPageState extends State<DetalhesMedPage> {
                   labelText: 'Nome do Medicamento',
                   border: OutlineInputBorder(),
                 ),
+                enabled: edicaoHabilitada,
                 validator: (value) =>
                     value == null || value.isEmpty ? 'Digite o nome' : null,
               ),
@@ -169,6 +208,7 @@ class _DetalhesMedPageState extends State<DetalhesMedPage> {
 
               TextFormField(
                 controller: obsController,
+                enabled: edicaoHabilitada,
                 decoration: const InputDecoration(
                   labelText: 'Observações',
                   border: OutlineInputBorder(),
@@ -185,12 +225,20 @@ class _DetalhesMedPageState extends State<DetalhesMedPage> {
                   ChoiceChip(
                     label: const Text('Tomando'),
                     selected: tomando,
-                    onSelected: (_) => setState(() => tomando = true),
+                    onSelected: (_) {
+                      if (edicaoHabilitada) {
+                        setState(() => tomando = true);
+                      }
+                    },
                   ),
                   ChoiceChip(
                     label: const Text('Pausado'),
                     selected: !tomando,
-                    onSelected: (_) => setState(() => tomando = false),
+                    onSelected: (_) {
+                      if (edicaoHabilitada) {
+                        setState(() => tomando = false);
+                      }
+                    },
                   ),
                 ],
               ),
@@ -204,9 +252,11 @@ class _DetalhesMedPageState extends State<DetalhesMedPage> {
                     label: Text(dia),
                     selected: diasSemanaSelecionados[dia]!,
                     onSelected: (selected) {
-                      setState(() {
-                        diasSemanaSelecionados[dia] = selected;
-                      });
+                      if (edicaoHabilitada) {
+                        setState(() {
+                          diasSemanaSelecionados[dia] = selected;
+                        });
+                      }
                     },
                   );
                 }).toList(),
@@ -215,6 +265,7 @@ class _DetalhesMedPageState extends State<DetalhesMedPage> {
 
               ListTile(
                 title: const Text('Data de Início'),
+                enabled: edicaoHabilitada,
                 subtitle: Text(
                   startDate != null
                       ? '${startDate!.day}/${startDate!.month}/${startDate!.year}'
@@ -226,6 +277,7 @@ class _DetalhesMedPageState extends State<DetalhesMedPage> {
 
               ListTile(
                 title: const Text('Data de Término'),
+                enabled: edicaoHabilitada,
                 subtitle: Text(
                   endDate != null
                       ? '${endDate!.day}/${endDate!.month}/${endDate!.year}'
@@ -238,45 +290,9 @@ class _DetalhesMedPageState extends State<DetalhesMedPage> {
               const SizedBox(height: 24),
 
               ElevatedButton.icon(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    final nome = nomeController.text.trim();
-                    final observacao = obsController.text.trim();
-                    final diasSemana = diasSemanaSelecionados.entries
-                        .where((e) => e.value)
-                        .map((e) => diasDaSemanaMap[e.key]!)
-                        .toList();
-
-                    final result = await viewModel.editarMedicacao(
-                      nome: nome,
-                      observacao: observacao,
-                      tomando: tomando,
-                      diasSemana: diasSemana,
-                      startDate: startDate!,
-                      endDate: endDate!,
-                      id: widget.medId
-                    );
-
-                    if (result) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Medicamento salvo com sucesso!'),
-                        ),
-                      );
-                      Navigator.pop(context);
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            viewModel.error.value ?? 'Erro ao salvar',
-                          ),
-                        ),
-                      );
-                    }
-                  }
-                },
-                icon: const Icon(Icons.save),
-                label: const Text('Salvar Medicamento'),
+                onPressed: edicaoHabilitada ? editar : habilitarEdicao,
+                icon:  edicaoHabilitada ? const Icon(Icons.save) : const Icon(Icons.edit),
+                label: edicaoHabilitada ? const Text('Salvar Medicamento') : Text('Habilitar edição'),
               ),
             ],
           ),

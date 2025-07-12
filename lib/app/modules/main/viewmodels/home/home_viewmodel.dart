@@ -21,7 +21,7 @@ class HomeViewmodel extends ChangeNotifier {
 
   Future<void> init() async {
     _setLoading(true);
-
+    _allmeds.clear();
     try {
       final user = await getUserByIdUsecase.call();
       if (user != null) {
@@ -46,7 +46,7 @@ class HomeViewmodel extends ChangeNotifier {
   void _filtrarPorDia(DateTime dia) {
     final auxMeds = <MedicacaoEntity>[];
     for (var med in _allmeds) {
-      if (med.diasSemana.contains(dia.weekday)) {
+      if (med.tomando && med.diasSemana.contains(dia.weekday)) {
         auxMeds.add(med);
       }
     }

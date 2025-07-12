@@ -17,7 +17,7 @@ class CadastroViewmodel extends ChangeNotifier {
 
     try {
       final sucesso = await _cadastroUsecase.call(
-        UserEntity(id: '', name: nome, email: email, senha: senha),
+        UserEntity(id: '', name: nome, email: email.toLowerCase(), senha: senha),
       );
       return true;
     } catch (e, stack) {

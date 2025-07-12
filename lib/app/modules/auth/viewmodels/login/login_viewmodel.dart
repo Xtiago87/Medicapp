@@ -16,12 +16,14 @@ class LoginViewModel extends ChangeNotifier {
 
     try {
       _setError(null);
-      final dadosLogin = DadosLoginEntity(email: email, password: password);
+      final dadosLogin = DadosLoginEntity(email: email.toLowerCase(), password: password);
       final user = await _loginUsecase.call(dadosLogin);
-
+      debugPrint('user $user');
       if (user == null) {
         _setError('Usuário ou senha inválidos');
+        return false;
       }
+
       return true;
     } catch (e) {
       debugPrint('error ${e}');

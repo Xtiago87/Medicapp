@@ -39,7 +39,7 @@ class _CadastroPageState extends State<CadastroPage> {
             content: Text('Conta criada com sucesso!'),
           ),
         );
-        Modular.to.pop();
+        Modular.to.pop(true);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(viewModel.error.value ?? 'Erro ao cadastrar')),

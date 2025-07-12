@@ -35,6 +35,7 @@ class _LoginPageState extends State<LoginPage> {
         emailController.text.trim(),
         passwordController.text.trim(),
       );
+      debugPrint('result $result');
       if(result){
         Modular.to.navigate('/main/');
       }

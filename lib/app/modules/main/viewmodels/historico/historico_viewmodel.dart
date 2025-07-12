@@ -21,6 +21,7 @@ class HistoricoViewmodel extends ChangeNotifier {
 
   Future<void> init() async {
     _setLoading(true);
+    _allMeds.clear();
     try {
       final lista = await _getAllMedsUsecase.call();
       _allMeds.addAll(lista);

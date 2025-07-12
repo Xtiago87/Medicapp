@@ -40,7 +40,7 @@ class MedFormViewmodel extends ChangeNotifier {
   try {
     await cadastroMedUsecase.call(
       MedicacaoEntity(
-        id: 0,
+        id: null,
         nome: nome,
         observacao: observacao,
         diasSemana: diasSemana,

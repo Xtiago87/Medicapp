@@ -88,8 +88,11 @@ class _HomePageState extends State<HomePage> {
                             vertical: 8,
                           ),
                           child: ListTile(
-                            onTap: () {
-                              Modular.to.pushNamed('/main/detalhes_med/${med.id}');
+                            onTap: () async {
+                              final result = await Modular.to.pushNamed('/main/detalhes_med/${med.id}') as bool;
+                              if(result){
+                                await viewmodel.init();
+                              }
                             },
                             leading: const Icon(Icons.medication),
                             title: Text(med.nome),
@@ -105,12 +108,7 @@ class _HomePageState extends State<HomePage> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Modular.to.pushNamed('/main/med_form');
-        },
-        child: const Icon(Icons.add),
-      ),
+      
     );
   }
 }
