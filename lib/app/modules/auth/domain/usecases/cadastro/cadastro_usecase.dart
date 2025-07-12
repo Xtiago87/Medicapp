@@ -8,7 +8,7 @@ class CadastroUsecase {
 
   CadastroUsecase(this._repository);
 
-  Future<UserEntity> call(UserEntity user, String password) {
-    return _repository.cadastro(user, password);
+  Future<UserEntity> call(UserEntity user) {
+    return _repository.cadastro(user);
   }
 }

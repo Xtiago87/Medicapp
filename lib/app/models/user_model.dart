@@ -15,16 +15,17 @@ class UserModel {
     return UserEntity(
       id: id.toString(),
       name: name,
-      email: email,
+      email: email, 
+      senha: senha,
     );
   }
 
-  static UserModel fromEntity(UserEntity entity, String senha) {
+  static UserModel fromEntity(UserEntity entity) {
     final model = UserModel();
     model.id = int.tryParse(entity.id) ?? Isar.autoIncrement;
     model.name = entity.name;
     model.email = entity.email;
-    model.senha = senha;
+    model.senha = entity.senha;
     return model;
   }
 }
